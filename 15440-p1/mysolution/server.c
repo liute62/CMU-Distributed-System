@@ -45,7 +45,7 @@ int main(int argc, char**argv) {
 	if (rv<0) err(1,0);
 	
 	// main server loop, handle clients one at a time, quit after 10 clients
-	for( i=0; i<10; i++ ) {
+	for( i=0; i<50; i++ ) {
 		
 		// wait for next client, get session socket
 		sa_size = sizeof(struct sockaddr_in);
@@ -56,7 +56,7 @@ int main(int argc, char**argv) {
 		while ( (rv=recv(sessfd, buf, MAXMSGLEN, 0)) > 0) {
 			buf[rv]=0;		// null terminate string to print
 			//printf("server got messge: %s\n", buf);
-			fprintf(stdout,"%s\n",buf);
+			printf("%s\n",buf);
 			// send reply
 			//printf("server replying to client: %s\n", msg);
 			send(sessfd, msg, strlen(msg), 0);	// should check return value
