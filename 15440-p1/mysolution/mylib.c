@@ -2,7 +2,9 @@
 
 #include <dlfcn.h>
 #include <stdio.h>
- 
+#include <stdlib.h>
+#include <netinet/in.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -109,8 +111,8 @@ struct dirtreenode* getdirtree( const char *path){
 }
 
 void freedirtree( struct dirtreenode* dt){
-	fprintf(stderr, "mylib: getdirtree called\n");
-	send_msg_by_type(OP_GETDIRTREE);
+	fprintf(stderr, "mylib: freedirtree called\n");
+	send_msg_by_type(OP_FREETREE);
 	return orig_freedirtree(dt);
 }
 
@@ -143,9 +145,9 @@ int network_init(){
 
 	// Get environment variable indicating the ip address of the server
 	serverip = getenv("server15440");
-	if (serverip) printf("Got environment variable server15440: %s\n", serverip);
+	if (serverip) fprintf(stderr, "Got environment variable server15440: %s\n", serverip);
 	else {
-		printf("Environment variable server15440 not found.  Using 127.0.0.1\n");
+		fprintf(stderr, "Environment variable server15440 not found.  Using 127.0.0.1\n");
 		serverip = "127.0.0.1";
 	}
 	
@@ -153,8 +155,9 @@ int network_init(){
 	serverport = getenv("serverport15440");
 	if (serverport) fprintf(stderr, "Got environment variable serverport15440: %s\n", serverport);
 	else {
-		fprintf(stderr, "Environment variable serverport15440 not found.  Using 15440\n");
-		serverport = "15440";
+		fprintf(stderr, "Environment variable serverport15440 not found.  Using 12432\n");
+		//serverport = "15440";
+		serverport = "12432";
 	}
 	port = (unsigned short)atoi(serverport);
 	
@@ -212,6 +215,7 @@ void send_msg_by_type(int type){
 
 void send_msg(char * msg){
 	int sockfd = network_init();
+	fprintf(stderr,"network_init \n");
 	send(sockfd, msg, strlen(msg)+1, 0);   // send 1024 bytes from bu
 	// get message back
 	char buf[MAXMSGLEN+1];

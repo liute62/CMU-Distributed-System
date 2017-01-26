@@ -23,8 +23,9 @@ int main(int argc, char**argv) {
 	// Get environment variable indicating the port of the server
 	serverport = getenv("serverport15440");
 	if (serverport) port = (unsigned short)atoi(serverport);
-	else port=15440;
-	
+	//else port=15440;
+	else port=12432;
+
 	// Create socket
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);	// TCP/IP socket
 	if (sockfd<0) err(1, 0);			// in case of error
@@ -33,7 +34,6 @@ int main(int argc, char**argv) {
 	memset(&srv, 0, sizeof(srv));			// clear it first
 	srv.sin_family = AF_INET;			// IP family
 	srv.sin_addr.s_addr = htonl(INADDR_ANY);	// don't care IP address
-	//srv.sin_addr.s_addr = inet_addr("127.0.0.1"); 
 	srv.sin_port = htons(port);			// server port
 
 	// bind to our port
@@ -45,7 +45,7 @@ int main(int argc, char**argv) {
 	if (rv<0) err(1,0);
 	
 	// main server loop, handle clients one at a time, quit after 10 clients
-	for( i=0; i<50; i++ ) {
+	for( i=0; i<20; i++ ) {
 		
 		// wait for next client, get session socket
 		sa_size = sizeof(struct sockaddr_in);
@@ -67,7 +67,6 @@ int main(int argc, char**argv) {
 		close(sessfd);
 	}
 	
-	//printf("server shutting down cleanly\n");
 	// close socket
 	close(sockfd);
 
